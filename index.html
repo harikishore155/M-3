@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modus Ponens Logic Derivation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        h1 {
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Modus Ponens Logic Program</h1>
+        <p>Enter the premises and conclusion:</p>
+        
+        <input type="text" id="premise1" placeholder="Enter 1st premise (e.g., P)">
+        <input type="text" id="premise2" placeholder="Enter 2nd premise (e.g., P->Q)">
+        <input type="text" id="premise3" placeholder="Enter 3rd premise (e.g., Q->R)">
+        <input type="text" id="conclusion" placeholder="Enter conclusion (e.g., R)">
+        <button onclick="deriveLogic()">Derive Logic</button>
+
+        <table id="logicTable" style="display: none;">
+            <thead>
+                <tr>
+                    <th>Premise</th>
+                    <th>Rule</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function modusPonens(premise1, premise2) {
+            if (premise2.includes('->') && premise2.includes(premise1)) {
+                const implies = premise2.split('->')[1];
+                return implies;
+            }
+            return null;
+        }
+
+        function deriveLogic() {
+            const premise1 = document.getElementById('premise1').value;
+            const premise2 = document.getElementById('premise2').value;
+            const premise3 = document.getElementById('premise3').value;
+            const conclusion = document.getElementById('conclusion').value;
+
+            let steps = [
+                { premise: premise1, rule: "P", reason: "Given premise" },
+                { premise: premise2, rule: "P", reason: "Given premise" }
+            ];
+
+            const step2Result = modusPonens(premise1, premise2);
+            if (step2Result) {
+                steps.push({
+                    premise: step2Result,
+                    rule: "T",
+                    reason: `Derived from ${premise1} & ${premise2} using Modus Ponens`
+                });
+            }
+
+            steps.push({ premise: premise3, rule: "P", reason: "Given premise" });
+
+            const step4Result = modusPonens(step2Result, premise3);
+            if (step4Result) {
+                steps.push({
+                    premise: step4Result,
+                    rule: "T",
+                    reason: `Derived from ${premise3} & ${step2Result} using Modus Ponens`
+                });
+            }
+
+            const table = document.getElementById('logicTable');
+            const tbody = table.querySelector('tbody');
+            tbody.innerHTML = ''; // Clear previous results
+
+            steps.forEach(step => {
+                const row = document.createElement('tr');
+                const premiseCell = document.createElement('td');
+                const ruleCell = document.createElement('td');
+                const reasonCell = document.createElement('td');
+
+                premiseCell.textContent = step.premise;
+                ruleCell.textContent = step.rule;
+                reasonCell.textContent = step.reason;
+
+                row.appendChild(premiseCell);
+                row.appendChild(ruleCell);
+                row.appendChild(reasonCell);
+                tbody.appendChild(row);
+            });
+
+            table.style.display = 'table';
+        }
+    </script>
+</body>
+</html>
